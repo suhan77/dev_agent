@@ -56,7 +56,7 @@ src/dev_agent/
 
 기본 상태는 아래 필드를 사용합니다.
 
-- `request`: 입력 요청
+- `messages`: LangGraph 메시지 상태
 - `intent`: 파악된 사용자 의도
 - `status`: 현재 상태
 - `logs`: 실행 로그

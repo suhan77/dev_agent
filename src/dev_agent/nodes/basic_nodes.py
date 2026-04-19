@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from langchain_core.messages import HumanMessage
+
 from dev_agent.logger import get_logger
 from dev_agent.state import AgentState
 
@@ -7,31 +9,34 @@ logger = get_logger(__name__)
 
 
 def prepare_node(state: AgentState) -> AgentState:
-    """그래프 실행 전에 입력값과 초기 상태를 준비합니다."""
-    request = state.get("request", "").strip()
-    logger.info("준비 노드 실행: 입력값을 확인합니다.")
+    """그래프 실행 전에 메시지 상태를 확인하고 초기 상태를 준비합니다."""
+    request = get_latest_user_message_text(state)
+    logger.info("준비 노드 실행: 메시지 입력값을 확인합니다.")
 
     if not request:
-        logger.warning("입력값이 비어 있어 기본 안내 문구를 사용합니다.")
-        request = "아직 요청이 입력되지 않았습니다."
+        logger.warning("메시지가 비어 있어 기본 안내 문구를 추가합니다.")
+        return {
+            "messages": [HumanMessage(content="아직 요청이 입력되지 않았습니다.")],
+            "status": "준비 완료",
+            "logs": ["준비 노드에서 입력 메시지를 확인했습니다."],
+        }
 
     return {
-        "request": request,
         "status": "준비 완료",
-        "logs": ["준비 노드에서 입력값을 확인했습니다."],
+        "logs": ["준비 노드에서 입력 메시지를 확인했습니다."],
     }
 
 
 def understand_intent_node(state: AgentState) -> AgentState:
-    """입력 요청을 바탕으로 사용자의 의도를 간단히 분류합니다."""
-    request = state["request"]
-    logger.info("의도 파악 노드 실행: 요청의 목적을 분석합니다.")
+    """입력 메시지를 바탕으로 사용자의 의도를 간단히 분류합니다."""
+    request = get_latest_user_message_text(state)
+    logger.info("의도 파악 노드 실행: 메시지의 목적을 분석합니다.")
     intent = classify_intent(request)
 
     return {
         "intent": intent,
         "status": "의도 파악 완료",
-        "logs": [f"의도 파악 노드에서 요청 의도를 '{intent}'로 정리했습니다."],
+        "logs": [f"의도 파악 노드에서 메시지 의도를 '{intent}'로 정리했습니다."],
     }
 
 
@@ -65,3 +70,15 @@ def classify_intent(request: str) -> str:
         return "테스트 작업"
 
     return "일반 요청"
+
+
+def get_latest_user_message_text(state: AgentState) -> str:
+    """상태의 마지막 사용자 메시지 내용을 문자열로 반환합니다."""
+    for message in reversed(state.get("messages", [])):
+        if isinstance(message, HumanMessage):
+            return message.content.strip()
+        message_type = getattr(message, "type", "")
+        if message_type == "human":
+            return str(message.content).strip()
+
+    return ""

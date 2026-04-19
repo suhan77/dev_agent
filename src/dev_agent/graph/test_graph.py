@@ -1,5 +1,9 @@
+# noinspection PyTypeChecker
 from __future__ import annotations
 
+from typing import Any
+
+from langchain_core.messages import HumanMessage
 from langgraph.graph import END, START, StateGraph
 
 from dev_agent.exceptions import GraphBuildError, GraphExecutionError
@@ -10,9 +14,12 @@ from dev_agent.state import AgentState
 def build_test_graph():
     """테스트 용도로 사용할 단순 그래프를 생성합니다."""
     try:
+        # noinspection PyTypeChecker
         builder = StateGraph(AgentState)
 
+        # noinspection PyTypeChecker
         builder.add_node("prepare", prepare_node)
+        # noinspection PyTypeChecker
         builder.add_node("finalize", finalize_node)
 
         builder.add_edge(START, "prepare")
@@ -27,9 +34,14 @@ def build_test_graph():
 TEST_GRAPH = build_test_graph()
 
 
-def run_test_graph(request: str) -> AgentState:
+def run_test_graph(request: str) -> dict[str, Any] | Any:
     """테스트 그래프를 실행하고 최종 상태를 반환합니다."""
     try:
-        return TEST_GRAPH.invoke({"request": request, "logs": []})
+        return TEST_GRAPH.invoke(
+            {
+                "messages": [HumanMessage(content=request)],
+                "logs": [],
+            }
+        )
     except Exception as error:  # pragma: no cover
         raise GraphExecutionError("테스트 그래프를 실행하지 못했습니다.") from error

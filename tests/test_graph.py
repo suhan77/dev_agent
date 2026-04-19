@@ -11,6 +11,7 @@ def test_run_main_graph_returns_intent_state() -> None:
 
     assert result["status"] == "종료 완료"
     assert result["intent"] == "기획 이해"
+    assert result["messages"][0].content == "기획 내용을 분석해줘"
     assert len(result["logs"]) == 3
 
 
@@ -28,6 +29,7 @@ def test_run_test_graph_skips_intent_node() -> None:
 
     assert result["status"] == "종료 완료"
     assert "intent" not in result
+    assert result["messages"][0].content == "테스트 그래프를 확인해줘"
     assert len(result["logs"]) == 2
 
 
