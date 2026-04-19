@@ -9,9 +9,14 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 
-from dev_agent.config import Settings, get_settings
+from dev_agent.config import (
+    AnthropicConfig,
+    OllamaConfig,
+    OpenAiConfig,
+    Settings,
+    get_settings,
+)
 from dev_agent.exceptions import ConfigurationError, LlmRequestError
-from dev_agent.llm_config import AnthropicConfig, OllamaConfig, OpenAiConfig
 
 
 class LlmProvider(str, Enum):

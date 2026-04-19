@@ -3,8 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_ollama import ChatOllama
 
-from dev_agent.config import get_settings
-from dev_agent.llm_config import AnthropicConfig, OllamaConfig, OpenAiConfig
+from dev_agent.config import AnthropicConfig, OllamaConfig, OpenAiConfig, get_settings
 from dev_agent.llm import (
     LangChainLlmClient,
     LlmProvider,
