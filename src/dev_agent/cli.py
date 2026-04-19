@@ -4,7 +4,7 @@ import typer
 
 from .exceptions import DevAgentError
 from .graph import GRAPH, run_main_graph, run_test_graph
-from .llm import LlmProvider, LlmRequest, create_llm_client
+from .llm import LlmRequest, create_llm_client
 from .logger import configure_logger
 
 app = typer.Typer(
@@ -82,7 +82,6 @@ def run_test_chat(
     try:
         client = create_llm_client()
         response = client.generate(
-            LlmProvider.OLLAMA,
             LlmRequest(
                 prompt=request,
                 system_prompt=system_prompt,
