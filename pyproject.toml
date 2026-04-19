@@ -9,7 +9,12 @@ description = "CLI-based development agent for understanding specs and preparing
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "langchain>=1.0,<2.0",
+    "langchain-anthropic>=1.0,<2.0",
+    "langchain-openai>=1.0,<2.0",
+    "langchain-ollama>=1.0,<2.0",
     "langgraph>=1.1.8",
+    "pydantic-settings>=2.0,<3.0",
     "typer>=0.12,<1.0",
 ]
 

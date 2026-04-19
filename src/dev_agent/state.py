@@ -10,6 +10,6 @@ class AgentState(TypedDict, total=False):
     """LangGraph 전체에서 공유하는 기본 상태입니다."""
 
     request: str
+    intent: str
     status: str
-    result: str
     logs: Annotated[list[str], operator.add]
